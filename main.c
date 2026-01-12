@@ -29,7 +29,7 @@ const char* statusDoTekstu(StatusPosta s) {
         case W_TRAKCIE: return "W trakcie analizy";
         case ZATWIERDZONE: return "Zatwierdzone";
         case USUNIETE: return "Usuniete";
-        deafult: return "Nieznany";
+        default: return "Nieznany";
     }
 }
 
@@ -51,21 +51,38 @@ nowy->nastepny = NULL;
 return nowy;
 }
 
-int main() {
-    printf("System Moderacji QuickTalk\n");
-    Post* p1 = stworzPost(1, "IncognitoZiomuś007", "alee słoodki kootek!");
-    Post* p2 = stworzPost(2, "Hejter", "nienawidze cie grubasie");
-    
-    if (p1 != NULL) {
-        printf("\nPost ID: %d\nAutor: %s\nTresc: %s\nStatus: %s\n", p1->id, p1->autor, p1->tresc, statusDoTekstu(p1->status));    
-    }
+Post* dodajNaPoczatek(Post* aktualnaGlowa, int id, const char* autor, const char* tresc) {
+    Post* nowy = stworzPost(id, autor, tresc);
+    if (nowy == NULL) return aktualnaGlowa;
+    nowy->nastepny = aktualnaGlowa;
+    return nowy;
+}
 
-    if (p1 != NULL) {
-        printf("\nPost ID: %d\nAutor: %s\nTresc; %s\nStatus: %s\n", p2->id, p2->autor, p2->tresc, statusDoTekstu(p2->status));
+void wyswietlListe(Post* glowa) {
+    printf("\n--- LISTA POSTOW ---\n");
+    Post* iterator = glowa;
+    while (iterator != NULL) {
+        printf("ID: %d | Autor: %s | Tresc: %s\n", iterator->id, iterator->autor, iterator->tresc);    
+        iterator = iterator->nastepny;
     }
-    free(p1);
-    free(p2);
-    printf("\nPamiec wyczyszczona --- Koniec Programu. \n");
-    
+    printf("--------------\n");
+}
+
+int main() {
+    Post* bazaPostow = NULL;
+
+    bazaPostow = dodajNaPoczatek(bazaPostow, 1, "Basia", "Elo, to muj 1wszy pej");
+    bazaPostow = dodajNaPoczatek(bazaPostow, 2, "Wacław", "Siemanko, witam grono odbiorcuf");
+    bazaPostow = dodajNaPoczatek(bazaPostow, 3, "ADMIN", "Gorąco Witamy na Platformie QuickTalk!");
+
+    wyswietlListe(bazaPostow);
+
+    Post* doUsuniecia;
+    while (bazaPostow != NULL) {
+        doUsuniecia = bazaPostow;
+        bazaPostow = bazaPostow->nastepny;
+        free(doUsuniecia);
+    }
+    printf("Pamiec wyczyszczona. \n");
     return 0;
 }
