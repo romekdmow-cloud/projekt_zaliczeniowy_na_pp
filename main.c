@@ -6,6 +6,16 @@
 #define MAX_TRESC 280
 #define MAX_KATEGORIA 30
 
+void wyczyscBufor() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void wczytajTekst(char* bufor, int rozmiar) {
+    if (fgets(bufor, rozmiar, stdin) != NULL) {
+        bufor[strcspn(bufor, "\n")] = 0;
+    }
+}
 typedef enum {
     DO_WERYFIKACJI, 
     W_TRAKCIE,
@@ -70,12 +80,61 @@ void wyswietlListe(Post* glowa) {
 
 int main() {
     Post* bazaPostow = NULL;
+    int wybor = -1;
+    int licznikId = 1;
+    
+    char tempAutor[MAX_AUTOR];
+    char tempTresc[MAX_TRESC];
 
-    bazaPostow = dodajNaPoczatek(bazaPostow, 1, "Basia", "Elo, to muj 1wszy pej");
-    bazaPostow = dodajNaPoczatek(bazaPostow, 2, "Wacław", "Siemanko, witam grono odbiorcuf");
-    bazaPostow = dodajNaPoczatek(bazaPostow, 3, "ADMIN", "Gorąco Witamy na Platformie QuickTalk!");
+    printf("Witaj w QuickTalk Manager v1.0\n");
 
-    wyswietlListe(bazaPostow);
+    do {
+        printf("\n--- MENU GLOWNE ---\n");
+        printf("1. Dodaj nowy post\n");
+        printf("2. Wyswietl wszystkie posty\n");
+        printf("0. Wyjdz\n");
+        printf("Twoj wybor: ");
+        
+        if (scanf("%d", &wybor) != 1) {
+            printf("Blad! To nie jest liczba.\n");
+            wyczyscBufor();
+            continue;
+        }
+        wyczyscBufor(); 
+
+        switch (wybor) {
+            case 1:
+                printf("\n--- DODAWANIE POSTA ---\n");
+                
+                printf("Podaj autora: ");
+                wczytajTekst(tempAutor, MAX_AUTOR);
+                
+                printf("Podaj tresc: ");
+                wczytajTekst(tempTresc, MAX_TRESC);
+                
+                bazaPostow = dodajNaPoczatek(bazaPostow, licznikId, tempAutor, tempTresc);
+                
+                printf("Sukces! Dodano post ID: %d\n", licznikId);
+                licznikId++;
+                break;
+
+            case 2:
+                if (bazaPostow == NULL) {
+                    printf("\n[INFO] Baza jest pusta.\n");
+                } else {
+                    wyswietlListe(bazaPostow);
+                }
+                break;
+
+            case 0:
+                printf("Zamykanie programu...\n");
+                break;
+
+            default:
+                printf("Nieznana opcja. Sprobuj ponownie.\n");
+        }
+
+    } while (wybor != 0);
 
     Post* doUsuniecia;
     while (bazaPostow != NULL) {
