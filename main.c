@@ -55,7 +55,7 @@ strcpy(nowy->autor, autor);
 strcpy(nowy->tresc, tresc);
 strcpy(nowy->kategoria, "ogolna"); 
 nowy->liczba_zgloszen = 0;
-nowy->status = DO_WERYFIKACJI;
+nowy->status = ZATWIERDZONE;
 nowy->nastepny = NULL;
 
 return nowy;
@@ -78,6 +78,41 @@ void wyswietlListe(Post* glowa) {
     printf("--------------\n");
 }
 
+Post* usunPost(Post* glowa, int idDoUsuniecia) {
+    if (glowa == NULL) {
+        printf("Lista jest pusta, nic nie usunieto;.\n");
+        return NULL;
+    }
+    if (glowa->id ==idDoUsuniecia) {
+        if (glowa ->status == DO_WERYFIKACJI) {
+            printf("[BLAD] Nie mozna usunac posta przed weryfikacja!\n");
+            return glowa;
+        }
+    Post* nowaGlowa = glowa->nastepny;
+    free(glowa);
+    printf("Usunieto post ID: %d\n", idDoUsuniecia);
+    return nowaGlowa;
+}
+    Post* iterator = glowa;
+    while (iterator->nastepny != NULL) {
+        if (iterator->nastepny->id == idDoUsuniecia) {
+            Post* doUsuniecia = iterator->nastepny;
+
+            if (doUsuniecia->status == DO_WERYFIKACJI) {
+                printf("[BLAD] Nie można usunac posta przed weryfikacja!\n");
+                return glowa;
+            }
+            iterator->nastepny = doUsuniecia->nastepny;
+            free(doUsuniecia);
+            printf("Usunieto post ID: %d\n", idDoUsuniecia);
+            return glowa; 
+        }
+        iterator = iterator->nastepny;
+    }
+    printf("Nie znaleziono posta o ID: %d\n", idDoUsuniecia);
+    return glowa;
+}
+
 int main() {
     Post* bazaPostow = NULL;
     int wybor = -1;
@@ -92,6 +127,7 @@ int main() {
         printf("\n--- MENU GLOWNE ---\n");
         printf("1. Dodaj nowy post\n");
         printf("2. Wyswietl wszystkie posty\n");
+        printf("3. Usun post (wg ID)\n");
         printf("0. Wyjdz\n");
         printf("Twoj wybor: ");
         
@@ -117,7 +153,6 @@ int main() {
                 printf("Sukces! Dodano post ID: %d\n", licznikId);
                 licznikId++;
                 break;
-
             case 2:
                 if (bazaPostow == NULL) {
                     printf("\n[INFO] Baza jest pusta.\n");
@@ -129,13 +164,21 @@ int main() {
             case 0:
                 printf("Zamykanie programu...\n");
                 break;
-
+            case 3:
+                printf("\n----- USUWANIE POSTA ------\n");
+                int idKasowane;
+                printf("Podaj ID posta do usuniecia: ");
+                if(scanf("%d", &idKasowane) == 1) {
+                    bazaPostow = usunPost(bazaPostow, idKasowane);
+                } else {
+                    printf("Blad: ID musi byc liczba.\n");
+                }
+                wyczyscBufor();
+                break;
             default:
                 printf("Nieznana opcja. Sprobuj ponownie.\n");
         }
-
     } while (wybor != 0);
-
     Post* doUsuniecia;
     while (bazaPostow != NULL) {
         doUsuniecia = bazaPostow;
