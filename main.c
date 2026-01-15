@@ -55,7 +55,7 @@ strcpy(nowy->autor, autor);
 strcpy(nowy->tresc, tresc);
 strcpy(nowy->kategoria, "ogolna"); 
 nowy->liczba_zgloszen = 0;
-nowy->status = ZATWIERDZONE;
+nowy->status = DO_WERYFIKACJI;
 nowy->nastepny = NULL;
 
 return nowy;
@@ -113,6 +113,63 @@ Post* usunPost(Post* glowa, int idDoUsuniecia) {
     return glowa;
 }
 
+void edytujPost(Post* glowa, int id) {
+    Post* iterator = glowa;
+    while (iterator != NULL) {
+        if (iterator->id == id) {
+            printf("\n--- EDYCJA POSTA ID: %d ---\n", id);
+            printf("Autor: %s\n", iterator->autor);
+            printf("Obecna tresc: %s\n", iterator->tresc);
+            printf("Obecny status: %s\n", statusDoTekstu(iterator->status));
+                 //mini menu
+            printf("\n C o chcesz zmienic? \n");
+            printf("1. Tresc posta\n");
+            printf("2. Status moderacji\n");
+            printf("0. Anuluj\n");
+            printf("Wybor: ");
+            int wyborEdycji;
+            if (scanf("%d", &wyborEdycji) != 1) {
+                wyczyscBufor();
+                return;
+            }
+            wyczyscBufor();
+            switch (wyborEdycji) {
+                case 1:
+                    printf("Podaj nowa tresc: ");
+                    wczytajTekst(iterator->tresc, MAX_TRESC);
+                    printf("Tresc zaktualizowana.\n");
+                    break;
+                case 2:
+                printf("Wybierz nowy status:\n");
+                    printf("0 - Do weryfikacji\n");
+                    printf("1 - W trakcie analizy\n");
+                    printf("2 - Zatwierdzone\n");
+                    printf("3 - Usuniete\n");
+                    printf("Twoj wybor: ");
+
+                    int nowyStatus;
+                    if(scanf("%d", &nowyStatus) == 1) {
+                        if (nowyStatus >= 0 && nowyStatus <= 3) {
+                            iterator->status = (StatusPosta)nowyStatus;
+                            printf("Status zmieniony na: %s\n", statusDoTekstu(iterator->status));
+                        } else {
+                            printf("Blad: Nieprawidłowy numer statusu.\n");
+                        }
+                    }
+                    wyczyscBufor();
+                    break;
+                case 0:
+                    printf("Anulowano edycje.\n");
+                    break;
+                default:
+                    printf("Nieznana opcja.\n");
+            }
+            return;
+            }
+            iterator = iterator->nastepny;
+        }
+        printf("Nie znaleziono posta o ID: %d\n", id);
+    }
 int main() {
     Post* bazaPostow = NULL;
     int wybor = -1;
@@ -127,7 +184,8 @@ int main() {
         printf("\n--- MENU GLOWNE ---\n");
         printf("1. Dodaj nowy post\n");
         printf("2. Wyswietl wszystkie posty\n");
-        printf("3. Usun post (wg ID)\n");
+        printf("3. Usun post\n");
+        printf("4. Edytuj Post\n");
         printf("0. Wyjdz\n");
         printf("Twoj wybor: ");
         
@@ -170,6 +228,17 @@ int main() {
                 printf("Podaj ID posta do usuniecia: ");
                 if(scanf("%d", &idKasowane) == 1) {
                     bazaPostow = usunPost(bazaPostow, idKasowane);
+                } else {
+                    printf("Blad: ID musi byc liczba.\n");
+                }
+                wyczyscBufor();
+                break;
+            case 4:
+                printf("\n----- EDYCJA POST A ------- \n");
+                int idEdycja;
+                printf("Podaj ID posta do edycji: ");
+                if(scanf("%d", &idEdycja) == 1) {
+                    edytujPost(bazaPostow, idEdycja);
                 } else {
                     printf("Blad: ID musi byc liczba.\n");
                 }
