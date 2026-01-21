@@ -33,5 +33,7 @@ Post* dodajNaPoczatek(Post* aktualnaGlowa, int id, const char* autor, const char
 void wyswietlListe(Post* glowa);
 Post* usunPost(Post* glowa, int idDoUsuniecia);
 void edytujPost(Post* glowa, int id);
+void wyszukajPoAutorze(Post* glowa, const char* szukanyFragment);
+void filtrujPoZgloszeniach(Post* glowa, int minZgloszen);
 
 #endif 

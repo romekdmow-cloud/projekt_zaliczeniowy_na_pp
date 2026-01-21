@@ -18,8 +18,10 @@ int main() {
         printf("1. Dodaj nowy post\n");
         printf("2. Wyswietl wszystkie posty\n");
         printf("3. Usun post\n");
-        printf("4. Edytuj Post\n");
-        printf("0. Wyjdz\n");
+        printf("4. Edytuj post\n");
+        printf("5. Szukaj (wg Autora)\n");   
+        printf("6. Filtruj (wg Zgloszen)\n"); 
+        printf("0. Wyjdz\n");;
         printf("Twoj wybor: ");
         
         if (scanf("%d", &wybor) != 1) {
@@ -74,6 +76,22 @@ int main() {
                     edytujPost(bazaPostow, idEdycja);
                 } else {
                     printf("Blad: ID musi byc liczba.\n");
+                }
+                wyczyscBufor();
+                break;
+            case 5:
+                printf("\nPodaj fragment nazwy autora: ");
+                char szukane[MAX_AUTOR];
+                wczytajTekst(szukane, MAX_AUTOR); 
+                wyszukajPoAutorze(bazaPostow, szukane);
+                break;
+            case 6:
+                printf("\nPokaz posty majace wiecej zgloszen niz: ");
+                int limit;
+                if (scanf("%d", &limit) == 1) {
+                    filtrujPoZgloszeniach(bazaPostow, limit);
+                } else {
+                    printf("Blad: to nie liczba.\n");
                 }
                 wyczyscBufor();
                 break;

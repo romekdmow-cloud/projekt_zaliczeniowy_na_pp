@@ -137,3 +137,37 @@ void edytujPost(Post* glowa, int id) {
     }
     printf("Nie znaleziono posta o ID: %d\n", id);
 }
+    void wyszukajPoAutorze(Post* glowa, const char* szukanyFragment) {
+        printf("\n--- WYNIKI WYSZUKIWANIA: '%s' ---\n", szukanyFragment);
+        Post* iterator = glowa;
+        int znaleziono = 0;
+        while (iterator != NULL) {
+            if (strstr(iterator->autor, szukanyFragment) != NULL) {
+                printf("ID: %d | Autor: %s | Tresc: %s\n",
+                    iterator->id, iterator->autor, iterator->tresc);
+                znaleziono = 1;    
+            }
+            iterator = iterator->nastepny;
+        }
+        if (znaleziono == 0) {
+            printf("Nie znaleziono postow dla frazy: '%s'\n", szukanyFragment);
+        }
+        printf("-----------------------------------\n");
+        }
+void filtrujPoZgloszeniach(Post* glowa, int minZgloszen) {
+    printf("\n--- FILTR: Zgloszenia > %d ---\n", minZgloszen);
+    Post* iterator = glowa;
+    int znaleziono = 0;
+    while (iterator != NULL) {
+        if (iterator->liczba_zgloszen > minZgloszen) {
+            printf("ID: %d | Zgloszen: %d | Tresc: %s\n", 
+                   iterator->id, iterator->liczba_zgloszen, iterator->tresc);
+            znaleziono = 1;    
+        }
+        iterator = iterator->nastepny;
+    }
+    if (znaleziono == 0) {
+        printf("Brak postow spelniajacych kryteria.\n");
+    }
+    printf("-------------------\n");
+}
