@@ -1,2 +1,3 @@
-2 janeek lollolo ogolna 0 0
-1 janeczeq 222 ogolna 0 0
+3 Ewa siostra ewa ogolna 0 0
+2 Janek 007 ogolna 0 0
+1 janeq opa ogolna 0 0

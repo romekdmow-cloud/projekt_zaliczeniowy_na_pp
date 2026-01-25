@@ -3,6 +3,11 @@
 #include <string.h>
 #include "post.h"
 
+void wyczyscEkran() {
+    system("cls");
+}
+
+
 int main() {
     Post* bazaPostow = wczytaj_baze();
     int wybor = -1;
@@ -19,8 +24,6 @@ int main() {
         }
         licznikId = maxId + 1;
         printf("--> [DEBUG] Wczytano dane. Nowy licznik startuje od: %d\n", licznikId);
-    } else {
-        printf("--> [DEBUG] Baza pusta (lub brak pliku). Licznik startuje od: 1\n");
     }
     char tempAutor[MAX_AUTOR];
     char tempTresc[MAX_TRESC];
@@ -84,20 +87,22 @@ int main() {
                 wyczyscBufor();
                 break;
             case 4:
-                printf("\n----- EDYCJA POST A ------- \n");
+                printf("\n----- EDYCJA POSTA -------\n");
                 int idEdycja;
                 printf("Podaj ID posta do edycji: ");
                 if(scanf("%d", &idEdycja) == 1) {
-                    edytujPost(bazaPostow, idEdycja);
+                    wyczyscBufor(); 
+                    edytujPost(bazaPostow, idEdycja);    
                 } else {
                     printf("Blad: ID musi byc liczba.\n");
+                    wyczyscBufor(); 
                 }
-                wyczyscBufor();
                 break;
             case 5:
                 printf("\nPodaj fragment nazwy autora: ");
                 char szukane[MAX_AUTOR];
-                wczytajTekst(szukane, MAX_AUTOR); 
+                wyczyscBufor(); 
+                wczytajTekst(szukane, MAX_AUTOR);
                 wyszukajPoAutorze(bazaPostow, szukane);
                 break;
             case 6:
@@ -112,6 +117,12 @@ int main() {
                 break;
             default:
                 printf("Nieznana opcja. Sprobuj ponownie.\n");
+        }
+        if (wybor != 0) {
+            printf("\n[Wcisnij ENTER, aby wrocic do menu...]");
+            getchar(); 
+            getchar(); 
+            system("cls"); 
         }
     } while (wybor != 0);
     Post* doUsuniecia;

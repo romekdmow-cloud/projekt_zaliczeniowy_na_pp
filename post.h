@@ -39,5 +39,4 @@ void zapisz_baze(Post* glowa);
 Post* wczytaj_baze();
 Post* odtworz_post(Post* glowa, int id, char* autor, char* tresc, char* kat, int zgl, int stat);
 
-
 #endif 
