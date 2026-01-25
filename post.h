@@ -35,5 +35,9 @@ Post* usunPost(Post* glowa, int idDoUsuniecia);
 void edytujPost(Post* glowa, int id);
 void wyszukajPoAutorze(Post* glowa, const char* szukanyFragment);
 void filtrujPoZgloszeniach(Post* glowa, int minZgloszen);
+void zapisz_baze(Post* glowa);
+Post* wczytaj_baze();
+Post* odtworz_post(Post* glowa, int id, char* autor, char* tresc, char* kat, int zgl, int stat);
+
 
 #endif 

@@ -170,4 +170,65 @@ void filtrujPoZgloszeniach(Post* glowa, int minZgloszen) {
         printf("Brak postow spelniajacych kryteria.\n");
     }
     printf("-------------------\n");
+    }
+    void zapisz_baze(Post* glowa) {
+        FILE* plik = fopen("baza_danych.txt", "w");
+        if (plik == NULL) {
+            printf("Blad: Nie udało się otworzyć pliku do zapisu!\n");
+            return ;
+        }
+        Post* iterator = glowa;
+        while (iterator != NULL) {
+            fprintf(plik, "%d %s %s %s %d %d\n" ,
+                iterator -> id,
+                iterator -> autor,
+                iterator -> tresc,
+                iterator -> kategoria,
+                iterator -> liczba_zgloszen,
+                (int)iterator->status);
+            iterator = iterator->nastepny;
+        } 
+
+        fclose(plik);
+        printf("--> [SYSTEMMM] Zapisano stan aplikacji do pliku.\n");
+    }
+
+    Post* odtworz_post(Post* glowa, int id, char* autor, char* tresc, char* kat, int zgl, int stat) {
+    Post* nowy = (Post*) malloc(sizeof(Post));
+
+    nowy->id = id;
+    strcpy(nowy->autor, autor);
+    strcpy(nowy->tresc, tresc);
+    strcpy(nowy->kategoria, kat);
+    nowy->liczba_zgloszen = zgl;
+    nowy->status = (StatusPosta)stat;
+    nowy->nastepny = NULL;
+
+    if(glowa == NULL) {
+        return nowy;
+    } else {
+        Post* temp = glowa;
+        while (temp->nastepny != NULL) {
+            temp = temp->nastepny;
+        }
+        temp->nastepny = nowy;
+        return glowa;
+    }
+}
+
+Post *wczytaj_baze() {
+    FILE* plik = fopen("baza_danych.txt", "r");
+    if (plik == NULL) {
+        return NULL;
+    }
+    Post* glowa = NULL;
+    int t_id, t_zgl, t_stat;
+    char t_autor[100], t_tresc[100], t_kat[100];
+    while (fscanf(plik, "%d %s %s %s %d %d",
+            &t_id, t_autor, t_tresc, t_kat, &t_zgl, &t_stat) == 6) {
+                glowa = odtworz_post(glowa, t_id, t_autor, t_tresc, t_kat, t_zgl, t_stat);
+    }
+    fclose(plik);
+    printf("---> [SYSTEEMMM] WCZYTANO historie postow z pliku.\n");
+    return glowa;
 }

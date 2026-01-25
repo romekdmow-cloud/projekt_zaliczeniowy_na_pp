@@ -4,10 +4,24 @@
 #include "post.h"
 
 int main() {
-    Post* bazaPostow = NULL;
+    Post* bazaPostow = wczytaj_baze();
     int wybor = -1;
     int licznikId = 1;
-    
+
+    if (bazaPostow != NULL) {
+        Post* temp = bazaPostow;
+        int maxId = 0;
+        while (temp != NULL) {
+            if (temp->id > maxId) {
+                maxId = temp->id;
+            }
+            temp = temp->nastepny;
+        }
+        licznikId = maxId + 1;
+        printf("--> [DEBUG] Wczytano dane. Nowy licznik startuje od: %d\n", licznikId);
+    } else {
+        printf("--> [DEBUG] Baza pusta (lub brak pliku). Licznik startuje od: 1\n");
+    }
     char tempAutor[MAX_AUTOR];
     char tempTresc[MAX_TRESC];
 
@@ -21,7 +35,7 @@ int main() {
         printf("4. Edytuj post\n");
         printf("5. Szukaj (wg Autora)\n");   
         printf("6. Filtruj (wg Zgloszen)\n"); 
-        printf("0. Wyjdz\n");;
+        printf("0. Wyjdz\n");
         printf("Twoj wybor: ");
         
         if (scanf("%d", &wybor) != 1) {
@@ -34,7 +48,6 @@ int main() {
         switch (wybor) {
             case 1:
                 printf("\n--- DODAWANIE POSTA ---\n");
-                
                 printf("Podaj autora: ");
                 wczytajTekst(tempAutor, MAX_AUTOR);
                 
@@ -56,6 +69,8 @@ int main() {
 
             case 0:
                 printf("Zamykanie programu...\n");
+                zapisz_baze(bazaPostow);
+                return 0;
                 break;
             case 3:
                 printf("\n----- USUWANIE POSTA ------\n");
@@ -108,3 +123,4 @@ int main() {
     printf("Pamiec wyczyszczona. \n");
     return 0;
 }
+
